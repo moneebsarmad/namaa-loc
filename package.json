@@ -1,0 +1,25 @@
+{
+  "name": "namaa-loc",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "npm@10.8.2",
+  "engines": {
+    "node": "^20 || ^22"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "typecheck": "turbo typecheck"
+  },
+  "devDependencies": {
+    "turbo": "^2.6.3",
+    "typescript": "5.9.3"
+  },
+  "overrides": {
+    "rollup": "4.59.1"
+  }
+}
