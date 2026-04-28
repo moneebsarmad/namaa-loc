@@ -10,7 +10,7 @@ insert into public.permissions (permission_name, description, category) values
   ('deduct_points', 'Can deduct merit or house points from students', 'points'),
   ('view_all_students', 'Can view the full student roster across the school', 'students'),
   ('view_house_students', 'Can view students in the assigned house only', 'students'),
-  ('view_own_record', 'Can view the current user's own portal record', 'profile'),
+  ('view_own_record', 'Can view the current own portal record', 'profile'),
   ('manage_users', 'Can create, edit, and deactivate user accounts', 'admin'),
   ('manage_school_settings', 'Can update school-level settings and branding', 'admin'),
   ('manage_interventions', 'Can create and update intervention records', 'interventions'),

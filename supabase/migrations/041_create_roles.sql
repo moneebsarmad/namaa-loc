@@ -14,7 +14,7 @@ insert into public.roles (role_name, description, priority) values
   ('support_staff', 'Limited operational staff who can record points and see basic student data', 5),
   ('house_mentor', 'House-scoped staff who manage one assigned house', 6),
   ('parent', 'Parent portal access limited to linked children', 7),
-  ('student', 'Student portal access limited to the student's own record', 8)
+  ('student', 'Student portal access limited to the student own record', 8)
 on conflict (role_name) do update
 set
   description = excluded.description,
