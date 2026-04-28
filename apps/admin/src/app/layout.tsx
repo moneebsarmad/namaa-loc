@@ -1,6 +1,13 @@
 import type { Metadata } from 'next'
+import { Nunito_Sans } from 'next/font/google'
 import './globals.css'
 import { Toaster } from 'sonner'
+
+const nunitoSans = Nunito_Sans({
+  variable: '--font-nunito-sans',
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+})
 
 export const metadata: Metadata = {
   // <!-- TODO Phase 3: read from school_settings -->
@@ -12,7 +19,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-soft-gray font-sans antialiased">
+      <body className={`${nunitoSans.variable} min-h-screen bg-soft-gray font-sans antialiased`}>
         <nav className="bg-forest text-white px-6 py-3 flex items-center gap-3 shadow-md">
           {/* <!-- TODO Phase 3: read from school_settings --> */}
           <span className="text-lg font-bold tracking-wide">{'{{PROGRAM_NAME}}'}</span>

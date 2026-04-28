@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
-import { Poppins, Source_Sans_3 } from "next/font/google";
+import { Nunito_Sans, Poppins, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 import AutoRotate from "@/components/AutoRotate";
+
+const nunitoSans = Nunito_Sans({
+  variable: "--font-nunito-sans",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+});
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -30,7 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${poppins.variable} ${sourceSans.variable} antialiased`}>
+      <body className={`${nunitoSans.variable} ${poppins.variable} ${sourceSans.variable} antialiased`}>
         <AutoRotate />
         {children}
       </body>
