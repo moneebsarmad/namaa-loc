@@ -20,3 +20,7 @@ create trigger set_profiles_updated_at
 before update on public.profiles
 for each row
 execute function public.set_updated_at();
+
+alter table public.profiles
+add constraint profiles_role_check
+check (role in ('super_admin', 'school_admin', 'dean', 'teacher', 'support_staff', 'house_mentor', 'parent', 'student'));
