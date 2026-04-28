@@ -15,8 +15,6 @@ create table public.schools (
   updated_at timestamptz not null default now()
 );
 
-create index schools_slug_idx on public.schools (slug);
-
 create or replace function public.set_updated_at()
 returns trigger
 language plpgsql
