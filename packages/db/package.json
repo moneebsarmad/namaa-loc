@@ -2,11 +2,19 @@
   "name": "@namaa-loc/db",
   "version": "0.1.0",
   "private": true,
-  "types": "./src/index.ts",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": {
+      "types": "./index.ts",
+      "default": "./index.ts"
+    }
+  },
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.89.0"
   },
   "devDependencies": {
