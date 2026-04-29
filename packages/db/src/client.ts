@@ -3,48 +3,12 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "./types";
 
-const browserSupabaseUrlEnvKeys = [
-  "NEXT_PUBLIC_SUPABASE_URL",
-  "SUPABASE_URL"
-] as const;
-
-const browserSupabaseAnonKeyEnvKeys = [
-  "NEXT_PUBLIC_SUPABASE_ANON_KEY",
-  "SUPABASE_ANON_KEY"
-] as const;
-
-export const browserSupabaseEnvKeys = {
-  url: browserSupabaseUrlEnvKeys,
-  anonKey: browserSupabaseAnonKeyEnvKeys
-} as const;
-
-function readFirstEnvValue(names: readonly string[]): string | undefined {
-  for (const name of names) {
-    const value = process.env[name];
-
-    if (value) {
-      return value;
-    }
-  }
-
-  return undefined;
-}
-
-function requireEnvValue(names: readonly string[], label: string): string {
-  const value = readFirstEnvValue(names);
-
-  if (!value) {
-    throw new Error(
-      `Missing Supabase ${label}. Set one of: ${names.join(", ")}.`
-    );
-  }
-
-  return value;
-}
-
-export function createSupabaseBrowserClient(): SupabaseClient<Database> {
-  return createBrowserClient<Database>(
-    requireEnvValue(browserSupabaseUrlEnvKeys, "URL"),
-    requireEnvValue(browserSupabaseAnonKeyEnvKeys, "anon key")
-  );
+export function createSupabaseBrowserClient(
+  url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL,
+  anonKey =
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? process.env.SUPABASE_ANON_KEY
+): SupabaseClient<Database> {
+  if (!url) throw new Error("Missing Supabase URL.");
+  if (!anonKey) throw new Error("Missing Supabase anon key.");
+  return createBrowserClient<Database>(url, anonKey);
 }
