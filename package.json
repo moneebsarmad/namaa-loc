@@ -11,7 +11,11 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "turbo dev",
+    "dev": "turbo run dev",
+    "dev:portal": "npm run dev --workspace @namaa-loc/portal",
+    "dev:leaderboard": "npm run dev --workspace @namaa-loc/leaderboard",
+    "dev:admin": "npm run dev --workspace @namaa-loc/admin",
+    "dev:all": "turbo run dev",
     "build": "turbo build",
     "typecheck": "turbo typecheck"
   },
