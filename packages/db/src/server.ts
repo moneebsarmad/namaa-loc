@@ -3,11 +3,11 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "./types";
 
-const serverSupabaseUrlEnvKey = "SUPABASE_URL";
+const serverSupabaseUrlEnvKeys = ["SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_URL"] as const;
 const serverSupabaseServiceRoleKeyEnvKey = "SUPABASE_SERVICE_ROLE_KEY";
 
 export const serverSupabaseEnvKeys = {
-  url: serverSupabaseUrlEnvKey,
+  url: serverSupabaseUrlEnvKeys,
   serviceRoleKey: serverSupabaseServiceRoleKeyEnvKey
 } as const;
 
@@ -27,11 +27,25 @@ function requireEnvValue(name: string): string {
   return value;
 }
 
+function requireFirstEnvValue(names: readonly string[]): string {
+  for (const name of names) {
+    const value = process.env[name];
+
+    if (value) {
+      return value;
+    }
+  }
+
+  throw new Error(
+    `Missing required Supabase server environment variable. Set one of: ${names.join(", ")}.`
+  );
+}
+
 export function createSupabaseServiceRoleClient(
   cookies: SupabaseServerCookieMethods = emptyCookieMethods
 ): SupabaseClient<Database> {
   return createServerClient<Database>(
-    requireEnvValue(serverSupabaseUrlEnvKey),
+    requireFirstEnvValue(serverSupabaseUrlEnvKeys),
     requireEnvValue(serverSupabaseServiceRoleKeyEnvKey),
     {
       cookies,

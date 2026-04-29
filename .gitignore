@@ -5,3 +5,7 @@ node_modules
 .turbo
 dist
 *.tsbuildinfo
+.DS_Store
+supabase/.temp/
+next-env.d.ts
+LOC_SaaS_Build_Todo_v1.1.md
