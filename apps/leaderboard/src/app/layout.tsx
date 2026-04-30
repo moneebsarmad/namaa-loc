@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
-import { Nunito_Sans, Poppins, Source_Sans_3 } from "next/font/google";
-import "./globals.css";
-import AutoRotate from "@/components/AutoRotate";
+import { headers } from "next/headers";
+import type { CSSProperties } from "react";
+import { Poppins, Source_Sans_3 } from "next/font/google";
 
-const nunitoSans = Nunito_Sans({
-  variable: "--font-nunito-sans",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-});
+import AutoRotate from "@/components/AutoRotate";
+import { LeaderboardSchoolProvider } from "@/app/branding-context";
+import { fallbackSchoolBranding } from "@/lib/branding";
+import { loadSchoolBranding } from "@/lib/loadSchoolBranding";
+import { loadSchoolHouses } from "@/lib/loadSchoolHouses";
+
+import "./globals.css";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -21,24 +23,62 @@ const sourceSans = Source_Sans_3({
   weight: ["400", "600"],
 });
 
-// <!-- TODO Phase 3: read from school_settings -->
-const systemName = process.env.NEXT_PUBLIC_SYSTEM_NAME || '{{PROGRAM_NAME}}'
+function normalizeSchoolId(value: string | null | undefined): string | null {
+  return typeof value === "string" && value.trim() ? value.trim() : null;
+}
 
-export const metadata: Metadata = {
-  title: `${systemName} Leaderboard`,
-  description: "The Operating System for Islamic School Culture",
-};
+async function resolveSchoolContext() {
+  const requestHeaders = await headers();
+  const schoolId = normalizeSchoolId(requestHeaders.get("x-school-id"));
 
-export default function RootLayout({
+  if (!schoolId) {
+    return {
+      schoolId: null,
+      branding: fallbackSchoolBranding,
+      houses: [],
+    };
+  }
+
+  const [branding, houses] = await Promise.all([
+    loadSchoolBranding(schoolId),
+    loadSchoolHouses(schoolId),
+  ]);
+
+  return { schoolId, branding, houses };
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { branding } = await resolveSchoolContext();
+  return {
+    title: `${branding.programName} Leaderboard`,
+    description: `${branding.schoolName} leaderboard display`,
+  };
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { schoolId, branding, houses } = await resolveSchoolContext();
+
   return (
     <html lang="en">
-      <body className={`${nunitoSans.variable} ${poppins.variable} ${sourceSans.variable} antialiased`}>
-        <AutoRotate />
-        {children}
+      <body
+        className={`${poppins.variable} ${sourceSans.variable} antialiased`}
+        style={
+          {
+            "--school-primary": branding.primaryColor,
+            "--school-secondary": branding.secondaryColor,
+            "--school-accent": branding.accentColor,
+            "--school-logo-url": `url(${branding.logoUrl})`,
+          } as CSSProperties
+        }
+      >
+        <LeaderboardSchoolProvider schoolId={schoolId} branding={branding} houses={houses}>
+          <AutoRotate />
+          {children}
+        </LeaderboardSchoolProvider>
       </body>
     </html>
   );
