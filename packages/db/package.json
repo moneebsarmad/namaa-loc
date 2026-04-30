@@ -8,6 +8,18 @@
     ".": {
       "types": "./index.ts",
       "default": "./index.ts"
+    },
+    "./auth.server": {
+      "types": "./src/auth.server.ts",
+      "default": "./src/auth.server.ts"
+    },
+    "./auth.client": {
+      "types": "./src/auth.client.ts",
+      "default": "./src/auth.client.ts"
+    },
+    "./server": {
+      "types": "./src/server.ts",
+      "default": "./src/server.ts"
     }
   },
   "scripts": {

@@ -21,6 +21,7 @@ interface Domain {
 export default function StudentNotificationProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth()
   const [linkedStudentId, setLinkedStudentId] = useState<string | null>(null)
+  const [schoolId, setSchoolId] = useState<string | null>(null)
   const [studentName, setStudentName] = useState<string>('')
   const [domains, setDomains] = useState<Domain[]>([])
   const [notifications, setNotifications] = useState<MeritNotification[]>([])
@@ -30,16 +31,32 @@ export default function StudentNotificationProvider({ children }: { children: Re
   useEffect(() => {
     if (!user?.id) {
       setLinkedStudentId(null)
+      setSchoolId(null)
       setStudentName('')
       return
     }
 
     const loadStudentData = async () => {
+      const { data: sessionData } = await supabase.auth.getSession()
+      const currentSchoolId = sessionData.session?.user?.app_metadata?.school_id
+
+      if (typeof currentSchoolId === 'string' && currentSchoolId.trim()) {
+        setSchoolId(currentSchoolId.trim())
+      } else {
+        setSchoolId(null)
+      }
+
+      if (!currentSchoolId) {
+        setLinkedStudentId(null)
+        return
+      }
+
       // Get linked student ID from profile
       const { data: profileData } = await supabase
         .from('profiles')
         .select('linked_student_id')
         .eq('id', user.id)
+        .eq('school_id', currentSchoolId)
         .maybeSingle()
 
       if (!profileData?.linked_student_id) {
@@ -54,6 +71,7 @@ export default function StudentNotificationProvider({ children }: { children: Re
         .from('students')
         .select('student_name')
         .eq('student_id', profileData.linked_student_id)
+        .eq('school_id', currentSchoolId)
         .maybeSingle()
 
       if (studentData?.student_name) {
@@ -79,7 +97,7 @@ export default function StudentNotificationProvider({ children }: { children: Re
 
   // Subscribe to merit_log inserts for this student
   useEffect(() => {
-    if (!linkedStudentId) return
+    if (!linkedStudentId || !schoolId) return
 
     // Clean up previous subscription
     if (subscriptionRef.current) {
@@ -87,7 +105,7 @@ export default function StudentNotificationProvider({ children }: { children: Re
     }
 
     const channel = supabase
-      .channel(`student-merits-${linkedStudentId}`)
+      .channel(`student-merits-${schoolId}-${linkedStudentId}`)
       .on(
         'postgres_changes',
         {
@@ -124,7 +142,7 @@ export default function StudentNotificationProvider({ children }: { children: Re
         supabase.removeChannel(subscriptionRef.current)
       }
     }
-  }, [linkedStudentId, studentName, domains])
+  }, [linkedStudentId, schoolId, studentName, domains])
 
   const removeNotification = useCallback((id: string) => {
     setNotifications((prev) => prev.filter((n) => n.id !== id))

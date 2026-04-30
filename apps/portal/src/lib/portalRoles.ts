@@ -6,6 +6,8 @@ export type DbRole =
   | 'teacher'
   | 'support_staff'
   | 'house_mentor'
+  | 'dean'
+  | 'school_admin'
   | 'admin'
   | 'super_admin'
 
@@ -14,18 +16,28 @@ const STAFF_PORTAL_DB_ROLES = new Set<DbRole>([
   'teacher',
   'support_staff',
   'house_mentor',
+  'dean',
+  'school_admin',
   'admin',
   'super_admin',
 ])
 
-const ADMIN_DB_ROLES = new Set<DbRole>(['admin', 'super_admin'])
+const ADMIN_DB_ROLES = new Set<DbRole>(['school_admin', 'dean', 'admin', 'super_admin'])
 const SUPER_ADMIN_DB_ROLES = new Set<DbRole>(['super_admin'])
-const STUDENT_DIRECTORY_DB_ROLES = new Set<DbRole>(['admin', 'super_admin', 'house_mentor'])
+const STUDENT_DIRECTORY_DB_ROLES = new Set<DbRole>([
+  'school_admin',
+  'dean',
+  'admin',
+  'super_admin',
+  'house_mentor',
+])
 const STUDENT_LOOKUP_DB_ROLES = new Set<DbRole>([
   'staff',
   'teacher',
   'support_staff',
   'house_mentor',
+  'dean',
+  'school_admin',
   'admin',
   'super_admin',
 ])

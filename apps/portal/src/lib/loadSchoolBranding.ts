@@ -1,4 +1,4 @@
-import { createSupabaseServiceRoleClient } from "@namaa-loc/db";
+import { createSupabaseServiceRoleClient } from "@namaa-loc/db/server";
 
 import { fallbackSchoolBranding, type SchoolBranding } from "./branding";
 

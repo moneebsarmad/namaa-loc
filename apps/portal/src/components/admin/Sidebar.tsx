@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
+import { useSchoolBranding } from '../../app/branding-context'
 
 type NavItem = {
   id: string
@@ -51,6 +52,7 @@ const groupOptions = ['Primary', 'Admin'] as const
 
 export default function Sidebar() {
   const pathname = usePathname()
+  const branding = useSchoolBranding()
   const [customizeOpen, setCustomizeOpen] = useState(false)
   const [order, setOrder] = useState<string[]>(defaultOrder)
   const [hidden, setHidden] = useState<string[]>([])
@@ -64,17 +66,11 @@ export default function Sidebar() {
   // Load user role from profiles table
   useEffect(() => {
     const loadUserRole = async () => {
-      const { data: authData } = await supabase.auth.getUser()
-      if (!authData.user) return
+      const { data: sessionData } = await supabase.auth.getSession()
+      const role = sessionData.session?.user?.app_metadata?.role
 
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', authData.user.id)
-        .maybeSingle()
-
-      if (profile?.role) {
-        setUserRole(profile.role)
+      if (typeof role === 'string') {
+        setUserRole(role)
       }
     }
 
@@ -188,18 +184,16 @@ export default function Sidebar() {
         <div className="flex items-center gap-4">
           {/* Crest Logo */}
           <div className="relative w-14 h-14 flex items-center justify-center">
-            {/* <!-- TODO Phase 3: read from school_settings --> */}
             <img
-              src="{{LOGO_URL}}"
-              alt="{{PROGRAM_NAME}} crest"
+              src={branding.logoUrl}
+              alt={`${branding.programName} crest`}
               className="w-12 h-12 object-contain drop-shadow-md"
             />
             <div className="absolute inset-0 rounded-full bg-[#b8860b] blur-xl opacity-20 -z-10"></div>
           </div>
           <div>
             <h1 className="text-xl font-semibold text-white tracking-tight" style={{ fontFamily: 'var(--font-playfair), Poppins, sans-serif' }}>
-              {/* <!-- TODO Phase 3: read from school_settings --> */}
-              {'{{PROGRAM_NAME}}'}
+              {branding.programName}
             </h1>
             <p className="text-sm text-[#d4a017]/80 font-medium tracking-wide">Admin Portal</p>
           </div>
@@ -327,16 +321,13 @@ export default function Sidebar() {
       <div className="p-6 border-t border-white/5">
         <div className="px-4 py-3 rounded-xl bg-white/5">
           <p className="text-sm text-white/40 font-medium tracking-wide">
-            {/* <!-- TODO Phase 3: read from school_settings --> */}
-            {'{{SCHOOL_NAME}}'}
+            {branding.schoolName}
           </p>
           <p className="text-xs text-white/20 mt-1">
-            {/* <!-- TODO Phase 3: read from school_settings --> */}
-            {'{{PROGRAM_TAGLINE}}'}
+            {branding.programShortName}
           </p>
           <p className="text-[11px] text-white/40 mt-2">
-            {/* <!-- TODO Phase 3: read from school_settings --> */}
-            Powered by {'{{PROVIDER_NAME}}'}
+            Powered by Nama Learning Systems
           </p>
         </div>
       </div>
