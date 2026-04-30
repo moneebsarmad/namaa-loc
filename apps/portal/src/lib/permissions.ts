@@ -264,6 +264,16 @@ export async function getUserRole(supabase: SupabaseClient): Promise<Role | null
   }
 }
 
+export async function getUserDbRole(supabase: SupabaseClient): Promise<DbRole | null> {
+  try {
+    const { role } = await getAuthClaims(supabase)
+    return role
+  } catch (error) {
+    console.error('Error getting user db role:', error)
+    return null
+  }
+}
+
 export async function getUserHouse(supabase: SupabaseClient): Promise<string | null> {
   try {
     const profile = await fetchProfileForCurrentSchool(supabase)

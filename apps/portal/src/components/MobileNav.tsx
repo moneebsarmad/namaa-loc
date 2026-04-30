@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useSchoolBranding } from '@/app/branding-context'
 
 type NavItem = {
   id: string
@@ -58,6 +59,7 @@ export default function MobileNav({
   showBehaviourNav = false,
 }: MobileNavProps) {
   const pathname = usePathname()
+  const branding = useSchoolBranding()
 
   const navItems = role === 'staff'
     ? staffNavItems.filter((item) => {
@@ -84,18 +86,16 @@ export default function MobileNav({
         <div className="p-6 border-b border-white/5">
           <div className="flex items-center gap-3">
             <div className="relative w-12 h-12 flex items-center justify-center">
-              {/* <!-- TODO Phase 3: read from school_settings --> */}
               <img
-                src="{{LOGO_URL}}"
-                alt="{{PROGRAM_NAME}} crest"
+                src={branding.logoUrl}
+                alt={`${branding.programName} crest`}
                 className="w-10 h-10 object-contain drop-shadow-md"
               />
               <div className="absolute inset-0 rounded-full bg-[#b8860b] blur-xl opacity-20 -z-10"></div>
             </div>
             <div>
               <h1 className="text-lg font-semibold text-white tracking-tight" style={{ fontFamily: 'var(--font-playfair), Poppins, sans-serif' }}>
-                {/* <!-- TODO Phase 3: read from school_settings --> */}
-                {'{{PROGRAM_NAME}}'}
+                {branding.programName}
               </h1>
               <p className="text-xs text-[#d4a017]/80 font-medium tracking-wide" style={{ fontFamily: 'var(--font-body), Source Sans 3, sans-serif' }}>
                 {portalLabel}

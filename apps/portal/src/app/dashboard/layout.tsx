@@ -51,6 +51,7 @@ export default function DashboardLayout({
 }) {
   const router = useRouter()
   const { user, loading } = useAuth()
+  const currentSchoolId = user?.app_metadata?.school_id ? String(user.app_metadata.school_id) : null
   const [role, setRole] = useState<Role | null>(null)
   const [profileLoading, setProfileLoading] = useState(true)
   const [staffName, setStaffName] = useState<string | null>(null)
@@ -70,6 +71,15 @@ export default function DashboardLayout({
 
   useEffect(() => {
     if (!userId) return
+    if (!currentSchoolId) {
+      setProfileLoading(false)
+      setRole(null)
+      setIsAdmin(false)
+      setShowStudentsNav(false)
+      setShowBehaviourNav(false)
+      setLinkedStaffId(null)
+      return
+    }
 
     const loadProfile = async () => {
       setProfileLoading(true)
@@ -77,6 +87,7 @@ export default function DashboardLayout({
         .from('profiles')
         .select('role, linked_staff_id')
         .eq('id', userId)
+        .eq('school_id', currentSchoolId)
         .maybeSingle()
 
       if (error) {
@@ -97,10 +108,10 @@ export default function DashboardLayout({
     }
 
     loadProfile()
-  }, [userId])
+  }, [currentSchoolId, userId])
 
   useEffect(() => {
-    if (!linkedStaffId) {
+    if (!linkedStaffId || !currentSchoolId) {
       setStaffName(null)
       return
     }
@@ -109,6 +120,7 @@ export default function DashboardLayout({
         .from('staff')
         .select('staff_name')
         .eq('id', linkedStaffId)
+        .eq('school_id', currentSchoolId)
         .maybeSingle()
 
       if (error) {
@@ -120,7 +132,7 @@ export default function DashboardLayout({
     }
 
     loadStaffName()
-  }, [linkedStaffId])
+  }, [currentSchoolId, linkedStaffId])
 
   if (loading) {
     return (

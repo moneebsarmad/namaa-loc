@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabaseClient'
 import {
   hasPermission,
   getUserRole,
+  getUserDbRole,
   getUserHouse,
   getUserPermissions,
   getUserProfile,
@@ -194,6 +195,32 @@ export function useUserProfile() {
       mounted = false
     }
   }, [fetchProfile])
+
+  return result
+}
+
+export function useUserDbRole() {
+  const [result, setResult] = useState<{ dbRole: UserProfile['role'] | null; loading: boolean }>({
+    dbRole: null,
+    loading: true,
+  })
+
+  useEffect(() => {
+    let mounted = true
+
+    async function fetchDbRole() {
+      const dbRole = await getUserDbRole(supabase)
+      if (mounted) {
+        setResult({ dbRole, loading: false })
+      }
+    }
+
+    fetchDbRole()
+
+    return () => {
+      mounted = false
+    }
+  }, [])
 
   return result
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { usePermission, useUserProfile, useUserRole } from '../hooks/usePermissions'
+import { usePermission, useUserDbRole, useUserRole } from '../hooks/usePermissions'
 import { Permission, Role, ROLES } from '../lib/permissions'
 import type { DbRole } from '../lib/portalRoles'
 
@@ -67,14 +67,14 @@ export function RequireDbRole({
   fallback = null,
   loadingComponent = null,
 }: RequireDbRoleProps) {
-  const { profile, loading } = useUserProfile()
+  const { dbRole, loading } = useUserDbRole()
 
   if (loading) {
     return loadingComponent ? <>{loadingComponent}</> : null
   }
 
   const allowedDbRoles = Array.isArray(dbRoles) ? dbRoles : [dbRoles]
-  const hasDbRole = profile?.role ? allowedDbRoles.includes(profile.role) : false
+  const hasDbRole = dbRole ? allowedDbRoles.includes(dbRole) : false
 
   return hasDbRole ? <>{children}</> : <>{fallback}</>
 }
