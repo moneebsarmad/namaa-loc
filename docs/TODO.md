@@ -5,6 +5,7 @@ Placeholder for `LOC_SaaS_Build_Todo_v1.1.md`.
 Populate this file when the source todo list is provided or copied in.
 
 ## Year 1 Backlog
+- [ ] Build dedicated club tracking API routes if needed — club data (badr_club, century_club, fath_club) is written via merit logging thresholds but has no dedicated read API yet
 
 - [ ] Build Level C cases UI and API (portal pages + API routes) — table exists in schema, feature was never implemented in LOC reference
 - [ ] Build reentry protocols UI and API — table exists in schema, feature was never implemented in LOC reference
